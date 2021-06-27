@@ -13,37 +13,7 @@ var (
 	max = 100
 )
 
-func autoTest(d dictionary.Dictionary, bot *tgbotapi.BotAPI, userID int, chatID int64) {
-
-	result, err := d.GetAll()
-	if err != nil {
-		msg := tgbotapi.NewMessage(chatID, err.Error())
-		bot.Send(msg)
-		return
-	}
-	msg := tgbotapi.NewMessage(chatID, "")
-	msg.ParseMode = "markdown"
-	for _, entry := range result {
-
-		eng := string(entry.Key)
-		cat := string(entry.Value)
-		msg.Text = "*Eng:* " + eng
-		//msg.ReplyToMessageID = update.Message.MessageID
-
-		bot.Send(msg)
-		time.Sleep(time.Second * 2)
-		msg.Text = "*Cat:* " + cat
-		bot.Send(msg)
-		time.Sleep(time.Second * 1)
-		msg.Text = "*-----*"
-		time.Sleep(time.Second * 1)
-		bot.Send(msg)
-	}
-	msg.Text = "EOF"
-	bot.Send(msg)
-}
-
-func RunBot(d *dictionary.Dictionary, token string) error {
+func RunBot(d dictionary.Dictionary, token string) error {
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
 		return err
@@ -81,7 +51,7 @@ func RunBot(d *dictionary.Dictionary, token string) error {
 			case "add", "Add":
 				userMess := strings.Split(update.Message.Text, " ")
 				if len(userMess) == 3 {
-					err := *d.Insert(userMess[1], userMess[2])
+					err := d.Insert([]byte(userMess[1]), []byte(userMess[2]))
 					msg.Text = "*Translation added correctly*"
 					if err != nil {
 						msg.Text = "Error: " + err.Error()
@@ -92,7 +62,7 @@ func RunBot(d *dictionary.Dictionary, token string) error {
 			case "del", "Del":
 				userMess := strings.Split(update.Message.Text, " ")
 				if len(userMess) == 2 {
-					err := DeleteEntry(update.Message.From.ID, userMess[1])
+					err := d.Delete([]byte(userMess[1]))
 					msg.Text = "*Entry deleted correctly*"
 					if err != nil {
 						msg.Text = "Error: " + err.Error()
@@ -109,13 +79,13 @@ func RunBot(d *dictionary.Dictionary, token string) error {
 					msg.Text += "*Command* " + command.Command + " *-* " + command.Description + "\n"
 				}
 			case "autotest":
-				autoTest(bot, update.Message.From.ID, update.Message.Chat.ID)
+				autoTest(d, bot, update.Message.Chat.ID)
 			default:
 				msg.Text = "I don't know that command"
 			}
 			bot.Send(msg)
 		} else {
-			eng, cat, err := GetRandom(update.Message.From.ID)
+			eng, cat, err := getRandom()
 			if err != nil {
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, err.Error())
 				bot.Send(msg)

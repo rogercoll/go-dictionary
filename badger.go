@@ -41,6 +41,13 @@ func (b *BadgerDB) Insert(key, value []byte) error {
 	})
 }
 
+func (b *BadgerDB) Delete(key []byte) error {
+	return b.db.Update(func(txn *badger.Txn) error {
+		err := txn.Delete(key)
+		return err
+	})
+}
+
 func (b *BadgerDB) GetAll() ([]Entry, error) {
 	var result []Entry
 	err := b.db.View(func(txn *badger.Txn) error {

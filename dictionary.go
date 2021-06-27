@@ -10,4 +10,5 @@ type Dictionary interface {
 	//slices cannot be used as key maps
 	GetAll() ([]Entry, error)
 	Insert([]byte, []byte) error
+	Delete([]byte) error
 }
