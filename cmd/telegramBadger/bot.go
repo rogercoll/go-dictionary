@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"strings"
-	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/rogercoll/go-dictionary"
@@ -85,21 +84,7 @@ func RunBot(d dictionary.Dictionary, token string) error {
 			}
 			bot.Send(msg)
 		} else {
-			eng, cat, err := getRandom()
-			if err != nil {
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, err.Error())
-				bot.Send(msg)
-				continue
-			}
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
-			msg.ParseMode = "markdown"
-			msg.Text = "*Eng:* " + eng
-			//msg.ReplyToMessageID = update.Message.MessageID
-
-			bot.Send(msg)
-			time.Sleep(time.Second * 2)
-			msg.Text = "*Cat:* " + cat
-			bot.Send(msg)
+			sendRandom(d, bot, update.Message.Chat.ID)
 		}
 	}
 	return nil
