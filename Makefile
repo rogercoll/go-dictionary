@@ -9,7 +9,7 @@ help: ## This help.
 .DEFAULT_GOAL := help
 
 build: ## Build the container
-	podman build -t $(APP_NAME) .
+	docker build -t $(APP_NAME) .
 
 deploy: ## Build the container
-	podman run $(APP_NAME) 
+	docker-compose up -d 
