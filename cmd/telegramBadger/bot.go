@@ -18,7 +18,7 @@ func RunBot(d dictionary.Dictionary, token string) error {
 		return err
 	}
 
-	bot.Debug = true
+	bot.Debug = false
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
