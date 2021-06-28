@@ -11,4 +11,5 @@ type Dictionary interface {
 	GetAll() ([]Entry, error)
 	Insert([]byte, []byte) error
 	Delete([]byte) error
+	Close()
 }

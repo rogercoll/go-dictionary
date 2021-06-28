@@ -70,3 +70,7 @@ func (b *BadgerDB) GetAll() ([]Entry, error) {
 	})
 	return result, err
 }
+
+func (b *BadgerDB) Close() {
+	b.db.Close()
+}
