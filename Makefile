@@ -9,6 +9,7 @@ help: ## This help.
 .DEFAULT_GOAL := help
 
 build: ## Build the container
+	docker build -t $(APP_NAME)-backup -f Dockerfile.bcktool .
 	docker build -t $(APP_NAME) .
 
 deploy: ## Build the container

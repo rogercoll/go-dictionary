@@ -1,6 +1,8 @@
 package dictionary
 
 import (
+	"io"
+
 	badger "github.com/dgraph-io/badger/v3"
 )
 
@@ -10,7 +12,7 @@ type BadgerDB struct {
 }
 
 func NewBadgerDB(path string) (*BadgerDB, error) {
-	db, err := badger.Open(badger.DefaultOptions("/tmp/badger"))
+	db, err := badger.Open(badger.DefaultOptions(path))
 	if err != nil {
 		return nil, err
 	}
@@ -69,6 +71,11 @@ func (b *BadgerDB) GetAll() ([]Entry, error) {
 		return nil
 	})
 	return result, err
+}
+
+func (b *BadgerDB) Backup(bckFile io.Writer) error {
+	_, err := b.db.Backup(bckFile, 0)
+	return err
 }
 
 func (b *BadgerDB) Close() {

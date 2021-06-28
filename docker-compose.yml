@@ -3,8 +3,11 @@ services:
   telegrambot:
     image: mydict
     container_name: mydictbot
+    args: main
     volumes:
       - /home/pi/dictdata:/var/lib/mydict
+      - /home/pi/backups:/var/bck/mydict
     environment:
       - BADGERDB_DIR=/var/lib/mydict
+      - BADGERDB_BCK_DIR=/var/bck/mydict
     restart: always
