@@ -3,7 +3,6 @@ services:
   telegrambot:
     image: mydict
     container_name: mydictbot
-    args: main
     volumes:
       - /home/pi/dictdata:/var/lib/mydict
       - /home/pi/backups:/var/bck/mydict
