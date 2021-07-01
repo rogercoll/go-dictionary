@@ -17,9 +17,5 @@ func main() {
 		log.Fatal(err)
 	}
 	defer b.Close()
-	token, ok := os.LookupEnv("TELEGRAM_TOKEN")
-	if !ok {
-		log.Fatal("TELEGRAM_TOKEN is not present")
-	}
 	RunBot(b, token)
 }
