@@ -8,8 +8,8 @@ jobs:
     env:      
       DOCKER_REGISTRY: hub.docker.com 
       DOCKER_IMAGE: coll97/mydict  
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}  
+      DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}  
       DOCKER_TARGET_PLATFORM: linux/arm/v7                 
     steps:    
     - name: Checkout the code       
