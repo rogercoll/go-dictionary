@@ -12,7 +12,12 @@ type BadgerDB struct {
 }
 
 func NewBadgerDB(path string) (*BadgerDB, error) {
-	db, err := badger.Open(badger.DefaultOptions(path))
+	//needed options to run in 32bit systems
+	opts := badger.DefaultOptions(path).
+		WithBaseTableSize(1 << 15).
+		WithValueLogFileSize(1 << 20).
+		WithSyncWrites(false)
+	db, err := badger.Open(opts)
 	if err != nil {
 		return nil, err
 	}
