@@ -1,7 +1,7 @@
 version: "2"
 services:
   telegrambot:
-    image: mydict
+    image: coll97/mydict
     container_name: mydictbot
     volumes:
       - /home/pi/dictdata:/var/lib/mydict
