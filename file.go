@@ -56,6 +56,8 @@ func NewFile(filePath string, cacheTime time.Duration) (*File, error) {
 	return &File{filePath, nil, time.Unix(0, 0), cacheTime}, nil
 }
 
+func (s *File) Close() {
+}
 func (s *File) Get(key []byte) ([]byte, error) {
 	if !s.inCacheTime() {
 		err := s.mapFile()
