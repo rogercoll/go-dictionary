@@ -91,7 +91,7 @@ func (s *File) Insert(key []byte, value []byte) error {
 	toString := make([]string, 2)
 	toString[0] = string(key)
 	toString[1] = string(value)
-	if _, err = f.WriteString(strings.Join(toString, " ")); err != nil {
+	if _, err = f.WriteString(strings.Join(toString, " ") + "\n"); err != nil {
 		return err
 	}
 	s.lastmap = time.Unix(0, 0)
