@@ -2,10 +2,9 @@ package dictionary
 
 import (
 	"bufio"
+	"bytes"
 	"errors"
-	"math/rand"
 	"os"
-	"reflect"
 	"strings"
 	"time"
 )
@@ -45,6 +44,7 @@ func (f *File) mapFile() error {
 		return err
 	}
 	f.mapvalues = keyvalues
+	f.lastmap = time.Now()
 	return nil
 }
 
@@ -53,7 +53,7 @@ func (f *File) inCacheTime() bool {
 }
 
 func NewFile(filePath string, cacheTime time.Duration) (*File, error) {
-	return &File{filePath, nil, time.Now(), cacheTime}, nil
+	return &File{filePath, nil, time.Unix(0, 0), cacheTime}, nil
 }
 
 func (s *File) Get(key []byte) ([]byte, error) {
@@ -63,18 +63,72 @@ func (s *File) Get(key []byte) ([]byte, error) {
 			return nil, err
 		}
 	}
-	keys := reflect.ValueOf(s.mapvalues).MapKeys()
-	return keys[rand.Intn(len(keys))].Bytes(), nil
+	return s.mapvalues[string(key)], nil
 }
 
 func (s *File) GetAll() ([]Entry, error) {
-	return nil, nil
+	if !s.inCacheTime() {
+		err := s.mapFile()
+		if err != nil {
+			return nil, err
+		}
+	}
+	all := make([]Entry, len(s.mapvalues))
+	i := 0
+	for k, v := range s.mapvalues {
+		all[i] = Entry{[]byte(k), v}
+		i += 1
+	}
+	return all, nil
 }
 
 func (s *File) Insert(key []byte, value []byte) error {
+	f, err := os.OpenFile(s.filePath, os.O_APPEND|os.O_WRONLY, 0600)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	toString := make([]string, 2)
+	toString[0] = string(key)
+	toString[1] = string(value)
+	if _, err = f.WriteString(strings.Join(toString, " ")); err != nil {
+		return err
+	}
+	s.lastmap = time.Unix(0, 0)
 	return nil
 }
 
 func (s *File) Delete(key []byte) error {
+	f, err := os.Open(s.filePath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	var bs []byte
+	buf := bytes.NewBuffer(bs)
+
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		keyFile := strings.Split(scanner.Text(), " ")
+		if keyFile[0] != string(key) {
+			_, err := buf.Write(scanner.Bytes())
+			if err != nil {
+				return err
+			}
+			_, err = buf.WriteString("\n")
+			if err != nil {
+				return err
+			}
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		return err
+	}
+	err = os.WriteFile(s.filePath, buf.Bytes(), 0666)
+	if err != nil {
+		return err
+	}
+	s.lastmap = time.Unix(0, 0)
 	return nil
 }
