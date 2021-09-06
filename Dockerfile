@@ -11,7 +11,7 @@ RUN go mod download
 COPY . .
 
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main cmd/telegramBadger/*
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main cmd/telegramFile/*
 
 ######## Start a new stage from scratch #######
 FROM alpine:3.12  
