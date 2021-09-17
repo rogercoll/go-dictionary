@@ -36,6 +36,10 @@ func main() {
 	if !ok {
 		log.Fatal("FILE_DB is not present")
 	}
+	token, ok := os.LookupEnv("TELEGRAM_TOKEN")
+	if !ok {
+		log.Fatal("FILE_DB is not present")
+	}
 	bckdir, ok := os.LookupEnv("BACKUP_FILE")
 	if !ok {
 		log.Fatal("BACKUP_FILE is not present")

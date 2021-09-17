@@ -12,5 +12,8 @@ build: ## Build the container
 	docker build -t $(APP_NAME)-backup -f Dockerfile.bcktool .
 	docker build -t $(APP_NAME) .
 
+build-multi: ## Build the container
+	docker buildx build --platform linux/arm/v6,linux/amd64 -t coll97/go-dictionary:latest . --push
+
 deploy: ## Build the container
 	docker-compose up -d 
