@@ -9,7 +9,6 @@ help: ## This help.
 .DEFAULT_GOAL := help
 
 build: ## Build the container
-	docker build -t $(APP_NAME)-backup -f Dockerfile.bcktool .
 	docker build -t $(APP_NAME) .
 
 build-multi: ## Build the container

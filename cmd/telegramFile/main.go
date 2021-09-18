@@ -4,7 +4,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"time"
 
 	"github.com/rogercoll/go-dictionary"
 )
@@ -38,28 +37,8 @@ func main() {
 	}
 	token, ok := os.LookupEnv("TELEGRAM_TOKEN")
 	if !ok {
-		log.Fatal("FILE_DB is not present")
+		log.Fatal("TELEGRAM_TOKEN is not present")
 	}
-	bckdir, ok := os.LookupEnv("BACKUP_FILE")
-	if !ok {
-		log.Fatal("BACKUP_FILE is not present")
-	}
-	ticker := time.NewTicker(30 * time.Second)
-	quit := make(chan struct{})
-	go func() {
-		for {
-			select {
-			case <-ticker.C:
-				err := copy(dbdir, bckdir)
-				if err != nil {
-					log.Println(err)
-				}
-			case <-quit:
-				ticker.Stop()
-				return
-			}
-		}
-	}()
 	b, err := dictionary.NewFile(dbdir, 10)
 	if err != nil {
 		log.Fatal(err)
